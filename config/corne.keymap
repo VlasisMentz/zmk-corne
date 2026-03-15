@@ -20,6 +20,13 @@
 #define NUM  3
 
 / {
+    // The standard corne_left/corne_right shields are 3×6 by default.
+    // vlacorne_small is 3×5 (no outer column), so switch to the built-in
+    // five_column_transform which skips col 0 (left) and col 11 (right).
+    chosen {
+        zmk,matrix_transform = &five_column_transform;
+    };
+
     behaviors {
         // Homerow mod: balanced flavor, 200 ms tapping term, 150 ms prior-idle
         // (mirrors QMK TAPPING_TERM 200 / FLOW_TAP_TERM 150 / QUICK_TAP_TERM 0)
