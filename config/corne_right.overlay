@@ -7,19 +7,20 @@
 //   TrackPoint pin 7  (GND)  → GND
 //   TrackPoint pin 8  (VCC)  → VCC  (3.3V regulated)
 
-#include <input/processors.dtsi>
-
 // ── Root node ─────────────────────────────────────────────────────────────────
 / {
-    chosen {
-        zmk,trackpoint = &mouse_ps2;
+    mouse_ps2: mouse_ps2 {
+        compatible = "zmk,input-mouse-ps2";
+        ps2-device = <&uart_ps2>;
+        rst-gpios = <&gpio1 6 GPIO_ACTIVE_HIGH>;
+        // tp-sensitivity = <160>;  // 0-255, default 128. Uncomment to tune.
     };
 
     mouse_ps2_input_listener: mouse_ps2_input_listener {
         compatible = "zmk,input-listener-ps2";
-        status = "okay";
         device = <&mouse_ps2>;
-        input-processors = <&zip_xy_scaler 1 2>;
+        // scale-multiplier = <1>;  // pointer speed scaling: multiplier/divisor
+        // scale-divisor = <2>;
     };
 };
 
@@ -44,7 +45,7 @@
     };
 };
 
-// ── UART0 peripheral (PS/2 mode) ─────────────────────────────────────────────
+// ── UART0 peripheral (PS/2 bus) ───────────────────────────────────────────────
 &uart0 {
     status = "okay";
     current-speed = <14400>;
@@ -52,8 +53,12 @@
     pinctrl-1 = <&uart0_sleep>;
     pinctrl-names = "default", "sleep";
 
-    mouse_ps2: mouse_ps2 {
-        compatible = "zmk,mouse-ps2";
-        rst-gpios = <&gpio1 6 GPIO_ACTIVE_HIGH>;
+    uart_ps2: uart_ps2 {
+        compatible = "uart-ps2";
+        // SCL = CLK line → P0.20 (UART RX)
+        scl-gpios = <&gpio0 20 GPIO_ACTIVE_HIGH>;
+        // SDA = DATA line → P0.17 (UART TX)
+        sda-gpios = <&gpio0 17 GPIO_ACTIVE_HIGH>;
+        status = "okay";
     };
 };
