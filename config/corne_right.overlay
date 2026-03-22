@@ -55,6 +55,23 @@
     };
 };
 
+// ── GPIOTE interrupt priority ─────────────────────────────────────────────────
+// The ps2_uart driver uses a GPIOTE falling-edge interrupt on the SCL/CLK pin
+// to detect the first clock pulse from the TrackPoint during writes.  This
+// interrupt must be serviced within ~30-50 µs.  By default on nRF52840, the
+// BT controller (BT_CTLR_LLL) runs at ARM priority 0, which would preempt
+// any GPIOTE handler and cause write timeouts.
+// CONFIG_PS2_UART=y already lowers BT priorities to 1/2/2 via its Kconfig
+// defaults.  This complementary DTS change raises GPIOTE to ARM priority 0
+// (the highest), allowing it to preempt the now-lowered BT interrupts.
+// Without this, every write attempt fails with "scl timeout" even though the
+// TrackPoint is generating clock pulses — they simply arrive after the 3 ms
+// deadline because BT holds the CPU too long.
+// nRF52840 GPIOTE = IRQ 6; format: < irq arm-priority >.
+&gpiote {
+    interrupts = <6 0>;
+};
+
 // ── UART0 peripheral (PS/2 bus) ───────────────────────────────────────────────
 &uart0 {
     status = "okay";
