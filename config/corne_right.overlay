@@ -1,11 +1,19 @@
 // ─── VlaCorne – Right Half Overlay (TrackPoint via PS/2 UART) ────────────────
 //
 // Hardware wiring:
-//   TrackPoint pin 1  (DATA) → P0.17  (Pro Micro D0 / was OLED SDA)
+//   TrackPoint pin 1  (DATA) → P1.02  (SuperMini bottom pad)
 //   TrackPoint pin 2  (RST)  → P1.06  (Pro Micro D9)
-//   TrackPoint pin 6  (CLK)  → P0.20  (Pro Micro D3 / was OLED SCL)
+//   TrackPoint pin 6  (CLK)  → P1.01  (SuperMini bottom pad)
 //   TrackPoint pin 7  (GND)  → GND
 //   TrackPoint pin 8  (VCC)  → VCC  (3.3V regulated)
+//
+// P1.01 and P1.02 are used instead of P0.20/P0.17 because:
+//   1. The Corne shield's own board overlay enables &i2c0 on P0.17/P0.20 for
+//      the OLED at the DTS level — even without CONFIG_ZMK_DISPLAY, the i2c0
+//      node remains "okay" and holds those pins, preventing clean pin release
+//      during the PS/2 write inhibit sequence.
+//   2. P1.01 and P1.02 have zero board-level or shield-level peripheral
+//      assignments on nice_nano_v2; they are pure GPIO pads.
 
 // ── Root node ─────────────────────────────────────────────────────────────────
 / {
@@ -38,21 +46,21 @@
 //   group2 → pins[1]   (must be TX = DATA/SDA)
 &pinctrl {
     uart1_default: uart1_default {
-        // pins[0]: RX = CLK line → P0.20  (Pro Micro D3 / was OLED SCL)
+        // pins[0]: RX = CLK line → P1.01  (SuperMini bottom pad, no peripheral conflicts)
         group1 {
-            psels = <NRF_PSEL(UART_RX, 0, 20)>;
+            psels = <NRF_PSEL(UART_RX, 1, 1)>;
             bias-pull-up;
         };
-        // pins[1]: TX = DATA/SDA line → P0.17  (Pro Micro D0 / was OLED SDA)
+        // pins[1]: TX = DATA/SDA line → P1.02  (SuperMini bottom pad, no peripheral conflicts)
         group2 {
-            psels = <NRF_PSEL(UART_TX, 0, 17)>;
+            psels = <NRF_PSEL(UART_TX, 1, 2)>;
         };
     };
 
     uart1_sleep: uart1_sleep {
         group1 {
-            psels = <NRF_PSEL(UART_RX, 0, 20)>,
-                    <NRF_PSEL(UART_TX, 0, 17)>;
+            psels = <NRF_PSEL(UART_RX, 1, 1)>,
+                    <NRF_PSEL(UART_TX, 1, 2)>;
             low-power-enable;
         };
     };
@@ -310,9 +318,18 @@
     interrupts = <47 3>;
 };
 
+// ── Disable i2c0 (Corne shield enables it on P0.17/P0.20 for OLED at DTS level)
+// Without this, i2c0 holds P0.17 and P0.20 "okay" even with CONFIG_ZMK_DISPLAY
+// disabled, which prevents UART from cleanly releasing those pins. Not needed
+// here since we're now on P1.01/P1.02, but added as belt-and-suspenders to
+// prevent i2c0 from interfering with anything on P0.17/P0.20.
+&i2c0 {
+    status = "disabled";
+};
+
 // ── UART1 peripheral (PS/2 bus) ───────────────────────────────────────────────
-// UART1 has no pre-existing board DTS on nice_nano_v2, so pinctrl sleep state
-// transitions are clean with no risk of UART0's board config interfering.
+// UART1 on P1.01 (CLK/RX) and P1.02 (DATA/TX): pure GPIO pads on the SuperMini
+// bottom with no board-level or shield-level peripheral assignments.
 &uart1 {
     status = "okay";
     current-speed = <14400>;
@@ -322,10 +339,10 @@
 
     uart_ps2: uart_ps2 {
         compatible = "uart-ps2";
-        // SCL = CLK line → P0.20 (UART RX)
-        scl-gpios = <&gpio0 20 GPIO_ACTIVE_HIGH>;
-        // SDA = DATA line → P0.17 (UART TX)
-        sda-gpios = <&gpio0 17 GPIO_ACTIVE_HIGH>;
+        // SCL = CLK line → P1.01 (UART1 RX)
+        scl-gpios = <&gpio1 1 GPIO_ACTIVE_HIGH>;
+        // SDA = DATA line → P1.02 (UART1 TX)
+        sda-gpios = <&gpio1 2 GPIO_ACTIVE_HIGH>;
         status = "okay";
     };
 };
