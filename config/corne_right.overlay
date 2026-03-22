@@ -24,17 +24,20 @@
     };
 };
 
-// ── UART0 pinctrl ─────────────────────────────────────────────────────────────
+// ── UART1 pinctrl ─────────────────────────────────────────────────────────────
+// Using UART1 (not UART0) because nice_nano_v2 board DTS pre-configures UART0,
+// which can prevent pinctrl_apply_state(SLEEP) from fully releasing P0.20 during
+// PS/2 write inhibit — causing scl timeout. UART1 has no board-level DTS config
+// on nice_nano_v2, so there is no conflict.
+//
 // The ps2_uart driver hardcodes pins[1] (i.e. the second flattened psel entry
 // across all groups) as the TX/SDA pin it reads back at init time for logging
 // and for GPIO bit-bang writes.  Zephyr's nRF pinctrl fills pins[] group-by-
 // group in DTS order, so:
 //   group1 → pins[0]   (must be RX = CLK)
 //   group2 → pins[1]   (must be TX = DATA/SDA)
-// The board's own nice_nano-pinctrl.dtsi uses the same layout (RX in group1,
-// TX in group2), so our overlay merges cleanly by keeping that structure.
 &pinctrl {
-    uart0_default: uart0_default {
+    uart1_default: uart1_default {
         // pins[0]: RX = CLK line → P0.20  (Pro Micro D3 / was OLED SCL)
         group1 {
             psels = <NRF_PSEL(UART_RX, 0, 20)>;
@@ -46,7 +49,7 @@
         };
     };
 
-    uart0_sleep: uart0_sleep {
+    uart1_sleep: uart1_sleep {
         group1 {
             psels = <NRF_PSEL(UART_RX, 0, 20)>,
                     <NRF_PSEL(UART_TX, 0, 17)>;
@@ -307,12 +310,14 @@
     interrupts = <47 3>;
 };
 
-// ── UART0 peripheral (PS/2 bus) ───────────────────────────────────────────────
-&uart0 {
+// ── UART1 peripheral (PS/2 bus) ───────────────────────────────────────────────
+// UART1 has no pre-existing board DTS on nice_nano_v2, so pinctrl sleep state
+// transitions are clean with no risk of UART0's board config interfering.
+&uart1 {
     status = "okay";
     current-speed = <14400>;
-    pinctrl-0 = <&uart0_default>;
-    pinctrl-1 = <&uart0_sleep>;
+    pinctrl-0 = <&uart1_default>;
+    pinctrl-1 = <&uart1_sleep>;
     pinctrl-names = "default", "sleep";
 
     uart_ps2: uart_ps2 {
