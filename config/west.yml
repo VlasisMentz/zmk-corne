@@ -6,6 +6,8 @@ manifest:
       url-base: https://github.com/englmaxi
     - name: infused-kim
       url-base: https://github.com/infused-kim
+    - name: vlasis
+      url-base: https://github.com/VlasisMentz
   projects:
     # ZMK fork that includes mouse PR #2027 (zmk/mouse/types.h etc.) and is
     # verified compatible with the infused-kim PS/2 driver module.
@@ -20,9 +22,10 @@ manifest:
     - name: zmk-dongle-display
       remote: englmaxi
       revision: v0.3
-    # PS/2 TrackPoint driver module (UART-based, reliable on nRF52840)
+    # PS/2 TrackPoint driver module — forked to add SCL pin state debug logging.
+    # Switch back to `remote: infused-kim / revision: main` once debugging is done.
     - name: kb_zmk_ps2_mouse_trackpoint_driver
-      remote: infused-kim
-      revision: main
+      remote: vlasis
+      revision: debug-logging
   self:
     path: config
