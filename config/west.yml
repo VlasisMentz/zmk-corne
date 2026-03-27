@@ -4,14 +4,15 @@ manifest:
   remotes:
     - name: zmkfirmware
       url-base: https://github.com/zmkfirmware
-    - name: englmaxi
-      url-base: https://github.com/englmaxi
+    - name: infused-kim
+      url-base: https://github.com/infused-kim
   projects:
     - name: zmk
-      remote: zmkfirmware
+      remote: infused-kim
+      revision: pr-testing/mouse_ps2_module_base
       import: app/west.yml
-    - name: zmk-dongle-display
-      remote: englmaxi
-      revision: v0.3
+    - name: kb_zmk_ps2_mouse_trackpoint_driver
+      remote: infused-kim
+      revision: main
   self:
     path: config
