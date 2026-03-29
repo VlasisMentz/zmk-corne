@@ -154,17 +154,17 @@
         // ┌───────┬───────┬───────┬───────┬───────┐   ┌───────┬───────┬───────┬───────┬───────┐
         // │TP SET │ ---   │ ---   │ SCLU  │ ---   │   │ ---   │ SCLU  │ ---   │ ---   │TP SET │
         // ├───────┼───────┼───────┼───────┼───────┤   ├───────┼───────┼───────┼───────┼───────┤
-        // │ ---   │ ---   │ ---   │ ---   │ ---   │   │ ---   │ ---   │ ---   │ ---   │ ---   │
+        // │ ---   │ LCK   │ MID   │ RCK   │ ---   │   │ ---   │ ---   │ ---   │ ---   │ ---   │
         // ├───────┼───────┼───────┼───────┼───────┤   ├───────┼───────┼───────┼───────┼───────┤
         // │ ---   │ ---   │ ---   │ SCLD  │ ---   │   │ ---   │ ---   │ ---   │ ---   │ ---   │
         // └───────┴───────┴─┬─────┴─┬─────┴─┬─────┘   └─┬─────┴─┬─────┴─┬─────┴───────┴───────┘
-        //                   │  MID  │  LCK  │  RCK  │   │  MID  │  LCK  │  RCK  │
+        //                   │ ESC  │NAV/TAB│  SPC  │   │  MID  │  LCK  │  RCK  │
         mouse_tp_layer {
             bindings = <
                 U_TOG_TP_SET &trans       &trans       &msc SCRL_UP   &trans          &trans      &msc SCRL_UP &trans       &trans       U_TOG_TP_SET
-                &trans       &trans       &trans       &trans         &trans          &trans      &trans       &trans       &trans       &trans
+                &trans       &mkp LCLK       &mkp MCLK       &mkp RCLK         &trans          &trans      &trans       &trans       &trans       &trans
                 &trans       &trans       &trans       &msc SCRL_DOWN &trans          &trans      &trans       &trans       &trans       &trans
-                                          &mkp MCLK   &mkp LCLK      &mkp RCLK       &mkp MCLK   &mkp LCLK   &mkp RCLK
+                                &lt BT_HOLD ESC &lt NAV TAB &kp SPACE       &mkp MCLK   &mkp LCLK   &mkp RCLK
             >;
         };
 
