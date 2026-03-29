@@ -14,12 +14,6 @@
     col-offset = <6>;
 };
 
-&mouse_ps2_input_listener {
-    xy-swap;
-    x-invert;
-    y-invert;
-};
-
 &kscan0 {
     col-gpios
         = <&pro_micro 14 GPIO_ACTIVE_HIGH>
@@ -544,6 +538,9 @@
         status = "disabled";
 
         device = <&mouse_ps2>;
+        xy-swap;
+        x-invert;
+        y-invert;
 
 		// Some of the available settings depend on the keymap. So they
 		// are adjusted in...
