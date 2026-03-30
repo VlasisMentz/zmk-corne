@@ -67,9 +67,9 @@
 
         // ─── Layer 1 ── NAV ──────────────────────────────────────────────────
         // ┌───────┬───────┬───────┬───────┬───────┐   ┌───────┬───────┬───────┬───────┬───────┐
-        // │  ESC  │   1   │   2   │   3   │   4   │   │ REDO  │ PASTE │ COPY  │  CUT  │ UNDO  │
+        // │  ESC  │  ALT  │  CTL  │  SFT  │  DEL  │   │ REDO  │ PASTE │ COPY  │  CUT  │ UNDO  │
         // ├───────┼───────┼───────┼───────┼───────┤   ├───────┼───────┼───────┼───────┼───────┤
-        // │  ALT  │ C(X)  │ C(C)  │ C(V)  │ C(S)  │   │ LEFT  │ DOWN  │  UP   │ RIGHT │   '   │
+        // │Pr.Scr │ C(X)  │ C(C)  │ C(V)  │ C(S)  │   │ LEFT  │ DOWN  │  UP   │ RIGHT │   '   │
         // ├───────┼───────┼───────┼───────┼───────┤   ├───────┼───────┼───────┼───────┼───────┤
         // │ SHIFT │ BTN1  │ BTN3  │ BTN2  │ C(Z)  │   │ HOME  │   "   │  ---  │  DEL  │  END  │
         // └───────┴───────┴───┬───┴───┬───┴───┬───┘   └───┬───┴───┬───┴───┬───┴───────┴───────┘
@@ -77,8 +77,8 @@
         //                     └───────┴───────┴───────┘   └───────┴───────┴───────┘
         nav_layer {
             bindings = <
-                &lt BT_HOLD ESC &kp N1      &kp N2      &kp N3      &kp N4          &kp LC(Y)  &kp LC(V)   &kp LC(C)   &kp LC(X)   &kp LC(Z)
-                &kp LALT    &kp LC(X)   &kp LC(C)   &kp LC(V)   &kp LC(S)       &kp LEFT   &kp DOWN    &kp UP      &kp RIGHT   &kp SQT
+                &kp ESC     &kp LALT    &kp LCTL    &kp LSFT    &kp DEL         &kp LC(Y)  &kp LC(V)   &kp LC(C)   &kp LC(X)   &kp LC(Z)
+                &kp PRINTSCREEN &kp LC(X)   &kp LC(C)   &kp LC(V)   &kp LC(S)       &kp LEFT   &kp DOWN    &kp UP      &kp RIGHT   &kp SQT
                 &kp LSFT    &mkp MB1    &mkp MB3    &mkp MB2    &kp LC(Z)       &kp HOME   &kp DQT     &none       &kp DEL     &kp END
                                         &trans      &trans      &trans          &trans     &mo NUM     &trans
             >;
@@ -88,36 +88,36 @@
         // ┌───────┬───────┬───────┬───────┬───────┐   ┌───────┬───────┬───────┬───────┬───────┐
         // │   !   │   @   │   #   │   $   │   %   │   │   ^   │   &   │   *   │   (   │   )   │
         // ├───────┼───────┼───────┼───────┼───────┤   ├───────┼───────┼───────┼───────┼───────┤
-        // │  ---  │   (   │   )   │  ---  │  ---  │   │   -   │   =   │   {   │   }   │   \   │
+        // │ GRAVE │  ---  │   (   │   )   │   "   │   │   -   │   =   │   {   │   }   │   \   │
         // ├───────┼───────┼───────┼───────┼───────┤   ├───────┼───────┼───────┼───────┼───────┤
-        // │  ---  │  ---  │  ---  │  ---  │  ---  │   │   _   │   +   │   [   │   ]   │   |   │
+        // │ Tilde │  ---  │  ---  │  ---  │   '   │   │   _   │   +   │   [   │   ]   │   |   │
         // └───────┴───────┴───┬───┴───┬───┴───┬───┘   └───┬───┴───┬───┴───┬───┴───────┴───────┘
-        //                     │ TRNS  │  NUM  │ TRNS  │   │ TRNS  │ TRNS  │   `   │
+        //                     │ TRNS  │  NUM  │ TRNS  │   │ TRNS  │ TRNS  │BT_CLR │
         //                     └───────┴───────┴───────┘   └───────┴───────┴───────┘
         sym_layer {
             bindings = <
                 &kp EXCL    &kp AT      &kp HASH    &kp DLLR    &kp PRCNT       &kp CARET  &kp AMPS    &kp ASTRK   &kp LPAR    &kp RPAR
-                &none       &kp LPAR    &kp RPAR    &none       &none           &kp MINUS  &kp EQUAL   &kp LBRC    &kp RBRC    &kp BSLH
-                &none       &none       &none       &none       &none           &kp UNDER  &kp PLUS    &kp LBKT    &kp RBKT    &kp PIPE
-                                        &trans      &mo NUM     &trans          &trans     &trans      &kp GRAVE
+                &kp GRAVE   &none       &kp LPAR    &kp RPAR    &kp DQT         &kp MINUS  &kp EQUAL   &kp LBRC    &kp RBRC    &kp BSLH
+                &kp TILDE2  &none       &none       &none       &kp SQT         &kp UNDER  &kp PLUS    &kp LBKT    &kp RBKT    &kp PIPE
+                                        &trans      &mo NUM     &trans          &trans     &trans      &bt BT_CLR
             >;
         };
 
         // ─── Layer 3 ── NUM ──────────────────────────────────────────────────
         // ┌───────┬───────┬───────┬───────┬───────┐   ┌───────┬───────┬───────┬───────┬───────┐
-        // │  ---  │  ---  │  ---  │  ---  │  ---  │   │  ---  │   7   │   8   │   9   │  ---  │
+        // │  F1   │  F2   │  F3   │  F4   │  F5   │   │  ---  │   7   │   8   │   9   │  ---  │
         // ├───────┼───────┼───────┼───────┼───────┤   ├───────┼───────┼───────┼───────┼───────┤
-        // │  ---  │  ---  │  ---  │  ---  │  ---  │   │  ---  │   4   │   5   │   6   │  ---  │
+        // │  F6   │  F7   │  F8   │  F9   │  F10  │   │  ---  │   4   │   5   │   6   │  ---  │
         // ├───────┼───────┼───────┼───────┼───────┤   ├───────┼───────┼───────┼───────┼───────┤
-        // │  ---  │  ---  │  ---  │  ---  │  ---  │   │   0   │   1   │   2   │   3   │  ---  │
+        // │  F11  │  F12  │  ---  │  ---  │  ---  │   │   0   │   1   │   2   │   3   │  ---  │
         // └───────┴───────┴───┬───┴───┬───┴───┬───┘   └───┬───┴───┬───┴───┬───┴───────┴───────┘
         //                     │ TRNS  │ TRNS  │ TRNS  │   │ TRNS  │ TRNS  │ TRNS  │
         //                     └───────┴───────┴───────┘   └───────┴───────┴───────┘
         num_layer {
             bindings = <
-                &none        &none        &none        &none        &none       &none      &kp N7      &kp N8      &kp N9      &none
-                &none        &none        &none        &none        &none       &none      &kp N4      &kp N5      &kp N6      &none
-                &none        &none        &none        &none        &none       &kp N0     &kp N1      &kp N2      &kp N3      &none
+                &kp F1       &kp F2       &kp F3       &kp F4       &kp F5      &none      &kp N7      &kp N8      &kp N9      &none
+                &kp F6       &kp F7       &kp F8       &kp F9       &kp F10     &none      &kp N4      &kp N5      &kp N6      &none
+                &kp F11      &kp F12      &none        &none        &none       &kp N0     &kp N1      &kp N2      &kp N3      &none
                                           &trans       &trans       &trans      &trans     &trans      &trans
             >;
         };
