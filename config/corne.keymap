@@ -20,6 +20,8 @@
 #define SYM  2
 #define NUM  3
 #define BT_HOLD 4
+#define GAME 5
+#define GAME_NUM 6
 
 / {
     // The standard corne_left/corne_right shields are 3×6 by default.
@@ -134,10 +136,28 @@
         //                     └───────┴───────┴───────┘   └───────┴───────┴───────┘
         bt_hold_layer {
             bindings = <
-                &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_CLR  &trans      &trans      &trans      &trans      &trans      &trans
+                &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_CLR  &tog GAME   &trans      &trans      &trans      &trans      &trans
                 &trans        &trans        &trans        &trans        &trans      &trans      &trans      &trans      &trans      &trans
                 &trans        &trans        &trans        &trans        &trans      &trans      &trans      &trans      &trans      &trans
                                           &trans        &trans        &trans          &trans      &trans      &trans
+            >;
+        };
+
+        game_layer {
+            bindings = <
+                &kp Q       &kp TAB     &kp W       &kp R       &kp T           &none      &none       &none       &none       &none
+                &kp LCTRL   &kp A       &kp S       &kp D       &kp F           &none      &none       &none       &none       &none
+                &kp LSFT    &kp C       &kp V       &kp E       &kp G           &none      &none       &none       &none       &none
+                                        &kp LALT    &mo GAME_NUM &kp SPACE      &kp RET    &kp ESC     &trans
+            >;
+        };
+
+        game_num_layer {
+            bindings = <
+                &kp N1      &kp N2      &kp N3      &kp N4      &kp N5          &none      &none       &none       &none       &none
+                &kp Q       &kp TAB     &kp I       &kp RET     &kp ESC         &none      &none       &none       &none       &none
+                &kp Z       &kp G       &kp T       &kp F8      &kp RET         &none      &none       &none       &none       &none
+                                        &trans      &trans      &trans          &kp RET    &kp ESC     &trans
             >;
         };
     };
