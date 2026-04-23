@@ -142,27 +142,28 @@
         // ─── Layer 4 ── BT_HOLD ──────────────────────────────────────────────
         //
         //  Mouse layout overview:
-        //   • HJKL  → cursor movement  (tune speed: &mmv time-to-max-speed-ms above)
+        //   • IJKL  → cursor movement  (tune speed: &mmv time-to-max-speed-ms above)
+        //               I=up (top row)  J=left  K=down  L=right
         //   • SDF   → left / middle / right click (home row, easy reach)
-        //   • NM,.  → scroll wheel, spatially mirroring HJKL above them:
+        //   • NM,.  → scroll wheel, spatially mirroring JKLI above them:
         //               N=scroll← M=scroll↓ ,=scroll↑ .=scroll→
         //   • /     → BT_CLR (clear current BT pairing)
         //
         // ┌───────┬───────┬───────┬───────┬───────┐   ┌───────┬───────┬───────┬───────┬───────┐
-        // │ BT 0  │ BT 1  │ BT 2  │BT CLR │  ---  │   │  ---  │  ---  │  ---  │  ---  │  ---  │
+        // │ BT 0  │ BT 1  │ BT 2  │BT CLR │  ---  │   │  ---  │  ---  │ M_UP  │  ---  │  ---  │
         // ├───────┼───────┼───────┼───────┼───────┤   ├───────┼───────┼───────┼───────┼───────┤
-        // │  ---  │ BTN1  │ BTN3  │ BTN2  │  ---  │   │M_LEFT │M_DOWN │ M_UP  │M_RIGHT│  ---  │
+        // │  ---  │ BTN1  │ BTN3  │ BTN2  │  ---  │   │  ---  │M_LEFT │M_DOWN │M_RIGHT│  ---  │
         // ├───────┼───────┼───────┼───────┼───────┤   ├───────┼───────┼───────┼───────┼───────┤
-        // │  ---  │  ---  │  ---  │  ---  │  ---  │   │SC_LEFT│SC_DOWN│SC_UP  │SC_RGT │BT_CLR │
+        // │  ---  │  ---  │  ---  │  ---  │  ---  │   │SC_LEFT│SC_DOWN│SC_UP  │SC_RGT │  ---
         // └───────┴───────┴───┬───┴───┬───┴───┬───┘   └───┬───┴───┬───┴───┬───┴───────┴───────┘
         //                     │(hold) │ TRNS  │ TRNS  │   │ TRNS  │ TRNS  │ TRNS  │
         //                     └───────┴───────┴───────┘   └───────┴───────┴───────┘
         bt_hold_layer {
             bindings = <
-                &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_CLR   &trans      &trans               &trans               &trans             &trans               &trans
-                &trans        &mkp MB1      &mkp MB3      &mkp MB2      &trans      &mmv MOVE_LEFT       &mmv MOVE_DOWN       &mmv MOVE_UP       &mmv MOVE_RIGHT      &trans
-                &trans        &trans        &trans        &trans        &trans      &msc SCRL_LEFT       &msc SCRL_DOWN       &msc SCRL_UP       &msc SCRL_RIGHT      &bt BT_CLR
-                                            &trans        &trans        &trans      &trans               &trans               &trans
+                &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_CLR   &trans      &trans               &trans               &mmv MOVE_UP       &trans               &trans
+                &trans        &mkp MB1      &mkp MB3      &mkp MB2      &trans      &trans               &mmv MOVE_LEFT       &mmv MOVE_DOWN     &mmv MOVE_RIGHT      &trans
+                &trans        &trans        &trans        &trans        &trans      &msc SCRL_LEFT       &msc SCRL_DOWN       &msc SCRL_UP       &msc SCRL_RIGHT      &trans
+                                            &trans        &trans        &trans      &trans               &trans               &transd
             >;
         };
 
