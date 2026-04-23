@@ -8,7 +8,6 @@
 //    2 SYM     – symbols
 //    3 NUM     – numpad
 //    4 BT_HOLD – Bluetooth controls + mouse (hold Esc)
-//    5 SNIPER  – precision/slow mouse movement (hold / while on BT_HOLD)
 // ─────────────────────────────────────────────────────────────────────────────
 
 #include <behaviors.dtsi>
@@ -21,16 +20,15 @@
 #define SYM     2
 #define NUM     3
 #define BT_HOLD 4
-#define SNIPER  5
 
 // ── Mouse speed tuning ───────────────────────────────────────────────────────
-// Bump up time-to-max-speed-ms  → slower acceleration (more predictable)
-// Lower it                      → snappier, reaches top speed faster
-// acceleration-exponent 0 = constant speed, 1 = linear ramp, 2 = quadratic
+// NOTE: zmk,behavior-mouse-move cannot be user-instantiated (no YAML binding
+// for user DTS nodes). You can only override the single built-in &mmv / &msc.
 //
-// Fast cursor  (HJKL on BT_HOLD): tweak &mmv below
-// Slow/sniper  (HJKL on SNIPER layer): tweak mmv_slow below
-// Scroll wheel (NM,. on BT_HOLD): tweak &msc below
+// To tune cursor speed: adjust time-to-max-speed-ms in &mmv below.
+//   Lower  → snappier, reaches top speed faster
+//   Higher → more gradual ramp, more predictable/controllable
+// acceleration-exponent: 0 = constant, 1 = linear ramp, 2 = quadratic
 
 &mmv {
     // ↓ reduce time-to-max-speed-ms for a snappier cursor, raise for more control
@@ -59,15 +57,6 @@
             require-prior-idle-ms = <150>;
             flavor = "balanced";
             bindings = <&kp>, <&kp>;
-        };
-
-        // Precision / sniper movement  ── hold / on BT_HOLD to activate SNIPER layer
-        // Lower time-to-max-speed-ms here for a tighter sniper feel
-        mmv_slow: mouse_move_slow {
-            compatible = "zmk,behavior-mouse-move";
-            #binding-cells = <1>;
-            time-to-max-speed-ms = <3000>; // very gradual ramp = fine pixel control
-            acceleration-exponent = <1>;
         };
     };
 
@@ -153,18 +142,18 @@
         // ─── Layer 4 ── BT_HOLD ──────────────────────────────────────────────
         //
         //  Mouse layout overview:
-        //   • HJKL  → fast cursor movement  (tune &mmv above)
+        //   • HJKL  → cursor movement  (tune speed: &mmv time-to-max-speed-ms above)
         //   • SDF   → left / middle / right click (home row, easy reach)
         //   • NM,.  → scroll wheel, spatially mirroring HJKL above them:
         //               N=scroll← M=scroll↓ ,=scroll↑ .=scroll→
-        //   • /     → hold for SNIPER layer (slow/precision cursor on HJKL)
+        //   • /     → BT_CLR (clear current BT pairing)
         //
         // ┌───────┬───────┬───────┬───────┬───────┐   ┌───────┬───────┬───────┬───────┬───────┐
         // │ BT 0  │ BT 1  │ BT 2  │BT CLR │  ---  │   │  ---  │  ---  │  ---  │  ---  │  ---  │
         // ├───────┼───────┼───────┼───────┼───────┤   ├───────┼───────┼───────┼───────┼───────┤
         // │  ---  │ BTN1  │ BTN3  │ BTN2  │  ---  │   │M_LEFT │M_DOWN │ M_UP  │M_RIGHT│  ---  │
         // ├───────┼───────┼───────┼───────┼───────┤   ├───────┼───────┼───────┼───────┼───────┤
-        // │  ---  │  ---  │  ---  │  ---  │  ---  │   │SC_LEFT│SC_DOWN│SC_UP  │SC_RGT │SNIPER │
+        // │  ---  │  ---  │  ---  │  ---  │  ---  │   │SC_LEFT│SC_DOWN│SC_UP  │SC_RGT │BT_CLR │
         // └───────┴───────┴───┬───┴───┬───┴───┬───┘   └───┬───┴───┬───┴───┬───┴───────┴───────┘
         //                     │(hold) │ TRNS  │ TRNS  │   │ TRNS  │ TRNS  │ TRNS  │
         //                     └───────┴───────┴───────┘   └───────┴───────┴───────┘
@@ -172,33 +161,10 @@
             bindings = <
                 &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_CLR   &trans      &trans               &trans               &trans             &trans               &trans
                 &trans        &mkp MB1      &mkp MB3      &mkp MB2      &trans      &mmv MOVE_LEFT       &mmv MOVE_DOWN       &mmv MOVE_UP       &mmv MOVE_RIGHT      &trans
-                &trans        &trans        &trans        &trans        &trans      &msc SCRL_LEFT       &msc SCRL_DOWN       &msc SCRL_UP       &msc SCRL_RIGHT      &mo SNIPER
+                &trans        &trans        &trans        &trans        &trans      &msc SCRL_LEFT       &msc SCRL_DOWN       &msc SCRL_UP       &msc SCRL_RIGHT      &bt BT_CLR
                                             &trans        &trans        &trans      &trans               &trans               &trans
             >;
         };
 
-        // ─── Layer 5 ── SNIPER ───────────────────────────────────────────────
-        //
-        //  Hold / on BT_HOLD to enter sniper mode.
-        //  HJKL become slow/precision cursor using mmv_slow (tune at top of file).
-        //  Everything else passes through from BT_HOLD (transparent).
-        //
-        // ┌───────┬───────┬───────┬───────┬───────┐   ┌───────┬───────┬───────┬───────┬───────┐
-        // │ TRNS  │ TRNS  │ TRNS  │ TRNS  │ TRNS  │   │ TRNS  │ TRNS  │ TRNS  │ TRNS  │ TRNS  │
-        // ├───────┼───────┼───────┼───────┼───────┤   ├───────┼───────┼───────┼───────┼───────┤
-        // │ TRNS  │ TRNS  │ TRNS  │ TRNS  │ TRNS  │   │S_LEFT │S_DOWN │ S_UP  │S_RIGHT│ TRNS  │
-        // ├───────┼───────┼───────┼───────┼───────┤   ├───────┼───────┼───────┼───────┼───────┤
-        // │ TRNS  │ TRNS  │ TRNS  │ TRNS  │ TRNS  │   │ TRNS  │ TRNS  │ TRNS  │ TRNS  │(hold) │
-        // └───────┴───────┴───┬───┴───┬───┴───┬───┘   └───┬───┴───┬───┴───┬───┴───────┴───────┘
-        //                     │ TRNS  │ TRNS  │ TRNS  │   │ TRNS  │ TRNS  │ TRNS  │
-        //                     └───────┴───────┴───────┘   └───────┴───────┴───────┘
-        sniper_layer {
-            bindings = <
-                &trans  &trans  &trans  &trans  &trans      &trans                    &trans                    &trans                  &trans                    &trans
-                &trans  &trans  &trans  &trans  &trans      &mmv_slow MOVE_LEFT       &mmv_slow MOVE_DOWN       &mmv_slow MOVE_UP       &mmv_slow MOVE_RIGHT      &trans
-                &trans  &trans  &trans  &trans  &trans      &trans                    &trans                    &trans                  &trans                    &trans
-                                &trans  &trans  &trans      &trans                    &trans                    &trans
-            >;
-        };
     };
 };
